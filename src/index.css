@@ -1,0 +1,56 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@900&family=JetBrains+Mono&display=swap');
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Poppins", sans-serif;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  body {
+    @apply font-sans antialiased bg-[#F8F9FA] text-[#212529] dark:bg-[#121212] dark:text-white transition-colors duration-300;
+  }
+}
+
+@utility minimal-card {
+  @apply bg-white/80 dark:bg-[#1E1E1E]/60 backdrop-blur-xl rounded-[32px] shadow-[0_8px_30px_rgba(0,0,0,0.04)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/20 dark:border-white/5;
+}
+
+@utility minimal-input {
+  @apply bg-[#F8F9FA] dark:bg-[#2A2A2A] border border-[#E9ECEF] dark:border-[#3A3A3A] rounded-[20px] px-6 py-4 outline-none transition-all text-[#212529] dark:text-white placeholder:text-[#ADB5BD] dark:placeholder:text-[#B0B0B0]/40 focus:border-[#2B4F6E] focus:ring-1 focus:ring-[#2B4F6E]/30;
+}
+
+@utility minimal-button {
+  @apply bg-[#2B4F6E] text-white font-semibold rounded-[28px] h-[56px] flex items-center justify-center transition-all active:scale-[0.97] hover:bg-[#345F85] disabled:opacity-50 shadow-md shadow-[#2B4F6E]/10;
+}
+
+@utility minimal-button-outline {
+  @apply border border-[#E9ECEF] dark:border-[#3A3A3A] text-[#495057] dark:text-[#B0B0B0] font-semibold rounded-[28px] h-[56px] flex items-center justify-center transition-all active:scale-[0.97] hover:bg-[#F8F9FA] dark:hover:bg-white/5;
+}
+
+@utility minimal-button-danger {
+  @apply border border-[#FFE3E3] dark:border-[#5A3A3A] bg-[#FFF5F5] dark:bg-[#3A2A2A] text-[#E03131] dark:text-[#FF8A8A] font-semibold rounded-[28px] h-[56px] flex items-center justify-center transition-all active:scale-[0.97] hover:bg-[#FFE3E3] dark:hover:bg-[#4A3A3A];
+}
+
+@utility minimal-nav {
+  @apply bg-white/70 dark:bg-[#1E1E1E]/70 backdrop-blur-2xl border border-white/20 dark:border-white/5 shadow-[0_10px_40px_rgba(0,0,0,0.08)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.4)] relative;
+
+  &::before {
+    content: '';
+    @apply absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-[1px] bg-gradient-to-r from-transparent via-[#2B4F6E]/30 dark:via-[#2B4F6E]/50 to-transparent;
+  }
+}
+
+@utility neon-glow {
+  @apply shadow-[0_0_15px_rgba(43,79,110,0.6)] dark:shadow-[0_0_20px_rgba(43,79,110,0.8)];
+}
+
+@utility minimal-progress-bg {
+  @apply bg-[#F1F3F5] dark:bg-[#2A2A2A] rounded-full overflow-hidden;
+}
+
+@utility minimal-progress-fill {
+  @apply bg-[#3A6D8C] h-full transition-all duration-1000 ease-out;
+}
