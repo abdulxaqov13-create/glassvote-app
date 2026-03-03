@@ -1,39 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Vote, 
-  BarChart3, 
-  User, 
-  Settings, 
-  Plus, 
-  LogOut, 
-  Moon, 
-  Sun, 
-  Globe, 
-  ChevronRight, 
-  CheckCircle2,
-  X,
-  Loader2,
-  Eye,
-  EyeOff,
-  Lock,
-  User as UserIcon,
-  FileQuestion,
-  TrendingUp,
-  Clock,
-  Edit3,
+  Vote, BarChart3, User, Settings, Plus, LogOut, Moon, Sun, Globe, 
+  ChevronRight, CheckCircle2, X, Loader2, Eye, EyeOff, Lock, 
+  User as UserIcon, FileQuestion, TrendingUp, Clock, Edit3,
   ChevronRight as ChevronRightIcon
 } from 'lucide-react';
 import { 
-  PieChart, 
-  Pie, 
-  Cell, 
-  ResponsiveContainer, 
-  Tooltip,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis
+  PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis
 } from 'recharts';
 import { User as UserType, Survey, VoteResult, Language, translations } from './types';
 
@@ -90,7 +64,7 @@ export default function App() {
   const fetchSurveys = async () => {
     setLoading(true);
     try {
-      const res = await fetch('https://glassvote-app.onrender.comhttps://glassvote-app.onrender.com/api/surveyssurveys');
+      const res = await fetch('https://glassvote-app.onrender.com/api/surveys');
       const data = await res.json();
       setSurveys(data);
     } catch (e) {
@@ -103,7 +77,7 @@ export default function App() {
   const fetchUsers = async () => {
     if (!user?.is_admin) return;
     try {
-      const res = await fetch(`https://glassvote-app.onrender.com/api/surveysusers?admin_id=${user.id}`);
+      const res = await fetch(`https://glassvote-app.onrender.com/api/users?admin_id=${user.id}`);
       const data = await res.json();
       if (res.ok) setUsers(data);
     } catch (e) {
@@ -114,43 +88,37 @@ export default function App() {
   const handleBlockUser = async (targetId: number, isBlocked: boolean) => {
     if (!user?.is_admin) return;
     try {
-      const res = await fetch(`https://glassvote-app.onrender.com/api/surveysusers/${targetId}/block`, {
+      const res = await fetch(`https://glassvote-app.onrender.com/api/users/${targetId}/block`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ admin_id: user.id, is_blocked: isBlocked }),
       });
-      if (res.ok) {
-        fetchUsers();
-      } else {
+      if (res.ok) fetchUsers();
+      else {
         const data = await res.json();
         alert(data.error || t.error);
       }
-    } catch (e) {
-      alert(t.error);
-    }
+    } catch (e) { alert(t.error); }
   };
 
   const handleDeleteUser = async (targetId: number) => {
     if (!user?.is_admin || !confirm(t.confirmDeleteUser)) return;
     try {
-      const res = await fetch(`https://glassvote-app.onrender.com/api/surveysusers/${targetId}?admin_id=${user.id}`, {
+      const res = await fetch(`https://glassvote-app.onrender.com/api/users/${targetId}?admin_id=${user.id}`, {
         method: 'DELETE',
       });
-      if (res.ok) {
-        fetchUsers();
-      } else {
+      if (res.ok) fetchUsers();
+      else {
         const data = await res.json();
         alert(data.error || t.error);
       }
-    } catch (e) {
-      alert(t.error);
-    }
+    } catch (e) { alert(t.error); }
   };
 
   const handleDeleteMyAccount = async () => {
     if (!user || !confirm(t.confirmDeleteAccount)) return;
     try {
-      const res = await fetch('https://glassvote-app.onrender.comhttps://glassvote-app.onrender.com/api/surveysusers/me', {
+      const res = await fetch('https://glassvote-app.onrender.com/api/users/me', {
         method: 'DELETE',
         headers: { 'user-id': user.id.toString() }
       });
@@ -161,9 +129,7 @@ export default function App() {
         const data = await res.json();
         alert(data.error || t.error);
       }
-    } catch (e) {
-      alert(t.error);
-    }
+    } catch (e) { alert(t.error); }
   };
 
   const sendVerificationCode = async (email: string) => {
@@ -171,30 +137,28 @@ export default function App() {
     setIsSendingCode(true);
     setAuthError(null);
     try {
-      const res = await fetch('https://glassvote-app.onrender.comhttps://glassvote-app.onrender.com/api/surveysauth/send-code', {
+      const res = await fetch('https://glassvote-app.onrender.com/api/auth/send-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
-      const result = await res.json();
       if (res.ok) {
         setIsCodeSent(true);
         setEmailForCode(email);
       } else {
+        const result = await res.json();
         setAuthError(result.error || t.error);
       }
-    } catch (e) {
-      setAuthError(t.error);
-    } finally {
-      setIsSendingCode(false);
-    }
+    } catch (e) { setAuthError(t.error); } finally { setIsSendingCode(false); }
   };
 
   const handleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData);
-    const endpoint = authMode === 'login' ? 'https://glassvote-app.onrender.comhttps://glassvote-app.onrender.com/api/surveysauth/login' : 'https://glassvote-app.onrender.comhttps://glassvote-app.onrender.com/api/surveysauth/register';
+    const endpoint = authMode === 'login' 
+      ? 'https://glassvote-app.onrender.com/api/auth/login' 
+      : 'https://glassvote-app.onrender.com/api/auth/register';
     
     setAuthError(null);
     try {
@@ -212,15 +176,13 @@ export default function App() {
       } else {
         setAuthError(result.error || t.error);
       }
-    } catch (e) {
-      setAuthError(t.error);
-    }
+    } catch (e) { setAuthError(t.error); }
   };
 
   const handleVote = async (surveyId: number) => {
     if (!user || currentVotes.length === 0) return;
     try {
-      const res = await fetch(`https://glassvote-app.onrender.com/api/surveyssurveys/${surveyId}/vote`, {
+      const res = await fetch(`https://glassvote-app.onrender.com/api/surveys/${surveyId}/vote`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: user.id, votes: currentVotes }),
@@ -233,20 +195,16 @@ export default function App() {
       } else {
         alert(result.error || t.error);
       }
-    } catch (e) {
-      alert(t.error);
-    }
+    } catch (e) { alert(t.error); }
   };
 
   const showResults = async (surveyId: number) => {
     try {
-      const res = await fetch(`https://glassvote-app.onrender.com/api/surveyssurveys/${surveyId}/results`);
+      const res = await fetch(`https://glassvote-app.onrender.com/api/surveys/${surveyId}/results`);
       const data = await res.json();
       setResults(data);
       setSelectedSurvey(surveys.find(s => s.id === surveyId) || null);
-    } catch (e) {
-      console.error(e);
-    }
+    } catch (e) { console.error(e); }
   };
 
   const handleCreateSurvey = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -261,20 +219,21 @@ export default function App() {
 
     setIsSubmitting(true);
     const formData = new FormData(e.currentTarget);
-    
     const data = {
       title: formData.get('title'),
       description: formData.get('description'),
       image_url: formData.get('image_url'),
       creator_id: user.id,
-      admin_id: user.id, // For PUT compatibility
-      questions: validQuestions.map((q, qIdx) => ({
+      admin_id: user.id,
+      questions: validQuestions.map(q => ({
         text: q.text,
         options: q.options.filter(o => o.trim() !== '')
       }))
     };
 
-    const endpoint = editingSurvey ? `https://glassvote-app.onrender.com/api/surveyssurveys/${editingSurvey.id}` : 'https://glassvote-app.onrender.comhttps://glassvote-app.onrender.com/api/surveyssurveys';
+    const endpoint = editingSurvey 
+      ? `https://glassvote-app.onrender.com/api/surveys/${editingSurvey.id}` 
+      : 'https://glassvote-app.onrender.com/api/surveys';
     const method = editingSurvey ? 'PUT' : 'POST';
 
     try {
@@ -283,41 +242,30 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      const result = await res.json();
       if (res.ok) {
         setView('surveys');
         fetchSurveys();
         setNewSurveyQuestions([{ text: '', options: ['', ''] }]);
         setEditingSurvey(null);
       } else {
+        const result = await res.json();
         alert(result.error || t.error);
       }
-    } catch (e) {
-      alert(t.error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    } catch (e) { alert(t.error); } finally { setIsSubmitting(false); }
   };
 
   const handleDeleteSurvey = async (id: number) => {
-    console.log(`Attempting to delete survey ${id}, user:`, user);
     if (!user || !confirm(t.confirmDelete)) return;
     try {
-      const res = await fetch(`https://glassvote-app.onrender.com/api/surveyssurveys/${id}?admin_id=${user.id}`, {
+      const res = await fetch(`https://glassvote-app.onrender.com/api/surveys/${id}?admin_id=${user.id}`, {
         method: 'DELETE',
       });
-      console.log(`Delete response status: ${res.status}`);
-      if (res.ok) {
-        fetchSurveys();
-      } else {
+      if (res.ok) fetchSurveys();
+      else {
         const data = await res.json();
-        console.error("Delete failed:", data);
         alert(data.error || t.error);
       }
-    } catch (e) {
-      console.error("Delete error:", e);
-      alert(t.error);
-    }
+    } catch (e) { alert(t.error); }
   };
 
   const startEditing = (survey: Survey) => {
@@ -608,6 +556,12 @@ export default function App() {
                         <ChevronRightIcon size={16} className="group-hover:translate-x-0.5 transition-transform" />
                       </div>
                     </div>
+                    {user.is_admin === 1 && (
+                      <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onClick={(e) => { e.stopPropagation(); startEditing(s); }} className="p-2 bg-white/80 dark:bg-black/80 rounded-lg hover:text-[#2B4F6E]"><Edit3 size={14}/></button>
+                        <button onClick={(e) => { e.stopPropagation(); handleDeleteSurvey(s.id); }} className="p-2 bg-white/80 dark:bg-black/80 rounded-lg hover:text-red-500"><X size={14}/></button>
+                      </div>
+                    )}
                   </motion.div>
                 ))
               )}
@@ -777,7 +731,7 @@ export default function App() {
                       onClick={async () => {
                         const input = document.getElementById('avatar-input') as HTMLInputElement;
                         try {
-                          const res = await fetch(`https://glassvote-app.onrender.com/api/surveysusers/${user.id}`, {
+                          const res = await fetch(`https://glassvote-app.onrender.com/api/users/${user.id}`, {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ ...user, avatar: input.value })
@@ -787,9 +741,7 @@ export default function App() {
                             setUser(data.user);
                             localStorage.setItem('user', JSON.stringify(data.user));
                           }
-                        } catch (e) {
-                          alert(t.error);
-                        }
+                        } catch (e) { alert(t.error); }
                       }}
                       className="px-4 py-2 bg-[#2B4F6E] text-white rounded-xl text-[10px] font-bold uppercase tracking-widest"
                     >
@@ -813,6 +765,7 @@ export default function App() {
                     <LogOut size={16} className="mr-2" />
                     {t.logout}
                   </button>
+                  <button onClick={handleDeleteMyAccount} className="w-full text-xs text-red-500 opacity-50 hover:opacity-100 transition-opacity uppercase tracking-tighter font-bold">{t.deleteAccount}</button>
                 </div>
               </div>
 
@@ -844,6 +797,7 @@ export default function App() {
                           >
                             {u.is_blocked ? t.unblock : t.block}
                           </button>
+                          <button onClick={() => handleDeleteUser(u.id)} className="p-1.5 text-red-400 hover:text-red-600 transition-colors"><X size={18}/></button>
                         </div>
                       </div>
                     ))}
@@ -870,7 +824,6 @@ export default function App() {
 
                 <div className="minimal-card p-6">
                   <h3 className="text-[10px] font-bold tracking-widest text-[#868E96] dark:text-[#B0B0B0] uppercase mb-5">{t.popularSurveys}</h3>
-                  
                   <div className="space-y-6">
                     {surveys.slice(0, 5).map(s => (
                       <div key={s.id} className="space-y-3">
@@ -903,10 +856,7 @@ export default function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => {
-                setSelectedSurvey(null);
-                setCurrentVotes([]);
-              }}
+              onClick={() => { setSelectedSurvey(null); setCurrentVotes([]); }}
               className="absolute inset-0 bg-[#212529]/60 dark:bg-black/80 backdrop-blur-[2px]"
             />
             <motion.div 
@@ -915,13 +865,7 @@ export default function App() {
               exit={{ opacity: 0, scale: 0.98, y: 20 }}
               className="minimal-card w-full max-w-xl relative z-10 max-h-[85vh] overflow-y-auto p-8"
             >
-              <button 
-                onClick={() => {
-                  setSelectedSurvey(null);
-                  setCurrentVotes([]);
-                }} 
-                className="absolute top-5 right-5 p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-colors"
-              >
+              <button onClick={() => { setSelectedSurvey(null); setCurrentVotes([]); }} className="absolute top-5 right-5 p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-colors">
                 <X size={24} className="text-[#868E96] dark:text-[#B0B0B0]" />
               </button>
               
@@ -999,20 +943,9 @@ export default function App() {
 
 function NavButton({ active, icon, onClick }: { active: boolean, icon: React.ReactNode, onClick: () => void }) {
   return (
-    <button 
-      onClick={onClick}
-      className="relative p-3.5 outline-none group"
-    >
+    <button onClick={onClick} className="relative p-3.5 outline-none group">
       <motion.div
-        animate={active ? { 
-          y: -4, 
-          scale: 1.15,
-          color: '#2B4F6E'
-        } : { 
-          y: 0, 
-          scale: 1,
-          color: '#868E96'
-        }}
+        animate={active ? { y: -4, scale: 1.15, color: '#2B4F6E' } : { y: 0, scale: 1, color: '#868E96' }}
         whileTap={{ y: -8, scale: 1.25 }}
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
         className="relative z-10"
@@ -1023,29 +956,8 @@ function NavButton({ active, icon, onClick }: { active: boolean, icon: React.Rea
           fill: active ? 'rgba(43, 79, 110, 0.15)' : 'transparent'
         })}
       </motion.div>
-
-      {active && (
-        <motion.div
-          layoutId="nav-pulse"
-          initial={{ scale: 0, opacity: 0.5 }}
-          animate={{ scale: 2, opacity: 0 }}
-          transition={{ duration: 0.6 }}
-          className="absolute inset-0 bg-[#2B4F6E]/20 rounded-full pointer-events-none"
-        />
-      )}
-
-      {active && (  
-        <motion.div 
-          layoutId="nav-active"
-          transition={{ 
-            type: "spring", 
-            stiffness: 300, 
-            damping: 30,
-            mass: 1.2
-          }}
-          className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#2B4F6E] neon-glow z-20"
-        />
-      )}
+      {active && <motion.div layoutId="nav-pulse" initial={{ scale: 0, opacity: 0.5 }} animate={{ scale: 2, opacity: 0 }} transition={{ duration: 0.6 }} className="absolute inset-0 bg-[#2B4F6E]/20 rounded-full pointer-events-none" />}
+      {active && <motion.div layoutId="nav-active" transition={{ type: "spring", stiffness: 300, damping: 30, mass: 1.2 }} className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#2B4F6E] neon-glow z-20" />}
     </button>
   );
 }
