@@ -90,7 +90,7 @@ export default function App() {
   const fetchSurveys = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/surveys');
+      const res = await fetch('https://glassvote-app.onrender.comhttps://glassvote-app.onrender.com/api/surveyssurveys');
       const data = await res.json();
       setSurveys(data);
     } catch (e) {
@@ -103,7 +103,7 @@ export default function App() {
   const fetchUsers = async () => {
     if (!user?.is_admin) return;
     try {
-      const res = await fetch(`/api/users?admin_id=${user.id}`);
+      const res = await fetch(`https://glassvote-app.onrender.com/api/surveysusers?admin_id=${user.id}`);
       const data = await res.json();
       if (res.ok) setUsers(data);
     } catch (e) {
@@ -114,7 +114,7 @@ export default function App() {
   const handleBlockUser = async (targetId: number, isBlocked: boolean) => {
     if (!user?.is_admin) return;
     try {
-      const res = await fetch(`/api/users/${targetId}/block`, {
+      const res = await fetch(`https://glassvote-app.onrender.com/api/surveysusers/${targetId}/block`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ admin_id: user.id, is_blocked: isBlocked }),
@@ -133,7 +133,7 @@ export default function App() {
   const handleDeleteUser = async (targetId: number) => {
     if (!user?.is_admin || !confirm(t.confirmDeleteUser)) return;
     try {
-      const res = await fetch(`/api/users/${targetId}?admin_id=${user.id}`, {
+      const res = await fetch(`https://glassvote-app.onrender.com/api/surveysusers/${targetId}?admin_id=${user.id}`, {
         method: 'DELETE',
       });
       if (res.ok) {
@@ -150,7 +150,7 @@ export default function App() {
   const handleDeleteMyAccount = async () => {
     if (!user || !confirm(t.confirmDeleteAccount)) return;
     try {
-      const res = await fetch('/api/users/me', {
+      const res = await fetch('https://glassvote-app.onrender.comhttps://glassvote-app.onrender.com/api/surveysusers/me', {
         method: 'DELETE',
         headers: { 'user-id': user.id.toString() }
       });
@@ -171,7 +171,7 @@ export default function App() {
     setIsSendingCode(true);
     setAuthError(null);
     try {
-      const res = await fetch('/api/auth/send-code', {
+      const res = await fetch('https://glassvote-app.onrender.comhttps://glassvote-app.onrender.com/api/surveysauth/send-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -194,7 +194,7 @@ export default function App() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData);
-    const endpoint = authMode === 'login' ? '/api/auth/login' : '/api/auth/register';
+    const endpoint = authMode === 'login' ? 'https://glassvote-app.onrender.comhttps://glassvote-app.onrender.com/api/surveysauth/login' : 'https://glassvote-app.onrender.comhttps://glassvote-app.onrender.com/api/surveysauth/register';
     
     setAuthError(null);
     try {
@@ -220,7 +220,7 @@ export default function App() {
   const handleVote = async (surveyId: number) => {
     if (!user || currentVotes.length === 0) return;
     try {
-      const res = await fetch(`/api/surveys/${surveyId}/vote`, {
+      const res = await fetch(`https://glassvote-app.onrender.com/api/surveyssurveys/${surveyId}/vote`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: user.id, votes: currentVotes }),
@@ -240,7 +240,7 @@ export default function App() {
 
   const showResults = async (surveyId: number) => {
     try {
-      const res = await fetch(`/api/surveys/${surveyId}/results`);
+      const res = await fetch(`https://glassvote-app.onrender.com/api/surveyssurveys/${surveyId}/results`);
       const data = await res.json();
       setResults(data);
       setSelectedSurvey(surveys.find(s => s.id === surveyId) || null);
@@ -274,7 +274,7 @@ export default function App() {
       }))
     };
 
-    const endpoint = editingSurvey ? `/api/surveys/${editingSurvey.id}` : '/api/surveys';
+    const endpoint = editingSurvey ? `https://glassvote-app.onrender.com/api/surveyssurveys/${editingSurvey.id}` : 'https://glassvote-app.onrender.comhttps://glassvote-app.onrender.com/api/surveyssurveys';
     const method = editingSurvey ? 'PUT' : 'POST';
 
     try {
@@ -303,7 +303,7 @@ export default function App() {
     console.log(`Attempting to delete survey ${id}, user:`, user);
     if (!user || !confirm(t.confirmDelete)) return;
     try {
-      const res = await fetch(`/api/surveys/${id}?admin_id=${user.id}`, {
+      const res = await fetch(`https://glassvote-app.onrender.com/api/surveyssurveys/${id}?admin_id=${user.id}`, {
         method: 'DELETE',
       });
       console.log(`Delete response status: ${res.status}`);
@@ -777,7 +777,7 @@ export default function App() {
                       onClick={async () => {
                         const input = document.getElementById('avatar-input') as HTMLInputElement;
                         try {
-                          const res = await fetch(`/api/users/${user.id}`, {
+                          const res = await fetch(`https://glassvote-app.onrender.com/api/surveysusers/${user.id}`, {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ ...user, avatar: input.value })
@@ -1034,7 +1034,7 @@ function NavButton({ active, icon, onClick }: { active: boolean, icon: React.Rea
         />
       )}
 
-      {active && (
+      {active && (  
         <motion.div 
           layoutId="nav-active"
           transition={{ 
